@@ -138,11 +138,18 @@ namespace CompanyHomework
             return startDate.AddDays(randomDays);
         }
 
-        private static int AgeCalculate(DateTime RandomDate)
+        private static int AgeCalculate(DateTime randomDate)
         {
-            int now = DateTime.Now.Year;
-            int dob = RandomDate.Year;
-            int age = now - dob;
+            int todayYear = DateTime.Now.Year;
+            int todayMonth = DateTime.Now.Month;
+            int todayDay = DateTime.Now.Day;
+            int birthYear = randomDate.Year;
+            int birthMonth = randomDate.Month;
+            int birthDay = randomDate.Day;
+            int age = todayYear - birthYear;
+            if (todayMonth < birthMonth || (todayMonth == birthMonth && todayDay < birthDay))
+                age--;
+
             return age;
         }
 
