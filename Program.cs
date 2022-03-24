@@ -14,9 +14,16 @@ namespace CompanyHomework
             Console.WriteLine("init");
 
             Console.WriteLine("Create Company");
+            
+            int companyCount = 0;
             Console.Write("Şirket sayısı giriniz: ");
-            int compNumber = Convert.ToInt32(Console.ReadLine());
-            CreateCompany(compNumber, _dataSlot);
+            while (!int.TryParse(Console.ReadLine(), out companyCount))
+            {
+                Console.Clear();
+                Console.WriteLine("Lütfen geçerli bir sayı giriniz");
+                Console.Write("Şirket sayısı giriniz: ");
+            }
+            Company.CreateCompany(_dataSlot, companyCount);
 
             Console.WriteLine("----------------Get Company List----------------");
 
@@ -25,31 +32,25 @@ namespace CompanyHomework
                 Console.WriteLine("{0} {1}", company.Id, company.Name);
             }
 
-            Console.WriteLine("Create Employees from Class void");
-            // I'm using employee class create with CreateCompany void class
-
+            Console.WriteLine("Create Employee from Class void");
+            
+            int employeeCount = 0;
             Console.Write("Çalışan sayısı giriniz: ");
-            int number = Convert.ToInt32(Console.ReadLine());
-            new Employee().CreateEmployees(_dataSlot, number);
+            
+            while (!int.TryParse(Console.ReadLine(), out employeeCount))
+            {
+                Console.WriteLine("Lütfen geçerli bir sayı giriniz");
+                Console.Write("Çalışan sayısı giriniz: ");
+            }
+            Employee.CreateEmployee(_dataSlot, employeeCount);
 
-            // new Employee().CreateEmployees(dataSlot, 20);
-            // dataSlot.Employees.Clear();
-
-            Console.WriteLine("----------------Get Employees List----------------");
+            Console.WriteLine("----------------Get Employee List----------------");
             foreach (var employee in _dataSlot.Employees)
             {
                 Console.WriteLine("employee : {0} {1} {2} {3} {4}", employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company.Name,employee.Company.Id);
             }
 
             Console.ReadLine();
-        }
-        private static void CreateCompany(int total, DataSlot dataSlot)
-        {
-            for (int i = 0; i < total + 1; i++)
-            {
-                var company = new Company(i, "Company" + i.ToString());
-                dataSlot.Companies.Add(company);
-            }
         }
     }
     public class DataSlot
@@ -80,6 +81,15 @@ namespace CompanyHomework
         {
             dataSlot.Companies = companies;
         }
+
+        public static void CreateCompany(DataSlot dataSlot, int total)
+        {
+            for (int i = 0; i < total; i++)
+            {
+                var company = new Company(i + 1, "Company" + (i + 1).ToString());
+                dataSlot.Companies.Add(company);
+            }
+        }
     }
 
     public class Employee
@@ -100,14 +110,14 @@ namespace CompanyHomework
             BirthDate = birthDate;
         }
 
-        private Random rnd = new Random();
-        private DateTime RandomDate(DateTime startDate, DateTime endDate)
+        private static Random rnd = new Random();
+        private static DateTime RandomDate(DateTime startDate, DateTime endDate)
         {
             int range = (endDate - startDate).Days;
             int randomDays = rnd.Next(range);
             return startDate.AddDays(randomDays);
         }
-        public void CreateEmployees(DataSlot dataSlot, int total)
+        public static void CreateEmployee(DataSlot dataSlot, int total)
         {
             int companiesCount = dataSlot.Companies.Count;
             for (int i = 1; i < total+1; i++)
@@ -117,15 +127,6 @@ namespace CompanyHomework
                 dataSlot.Employees.Add(employee);
             }
         }
-        //public List<Employee> CreateEmployees (DataSlot dataSlot, int total)
-        //{
-        //    for (int i = 1; i < total + 1; i++)
-        //    {
-        //        var employee = new Employee(i, "Emp-" + i.ToString(), RandomDate(new DateTime(1950, 01, 01), new DateTime(2004, 01, 01)));
-        //        dataSlot.Employees.Add(employee);
-        //    }
-        //    return dataSlot.Employees;
-        //}
     }
     
 
