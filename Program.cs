@@ -48,8 +48,8 @@ namespace CompanyHomework
 
             foreach (var employee in _dataSlot.Employees)
             {
-                Console.WriteLine("employee : Id: {0} Name: {1} BirthDate: {2} company name :{3} company id: {4} salary: {5} TL", 
-                    employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company.Name,employee.Company.Id,employee.Salary);
+                Console.WriteLine("employee : Id: {0} Name: {1} BirthDate: {2} company name :{3} company id: {4} salary: {5} TL age: {6}", 
+                    employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company.Name,employee.Company.Id,employee.Salary,employee.Age);
             }
 
             Console.WriteLine("----------------Company list with Odd ID----------------");
@@ -57,13 +57,6 @@ namespace CompanyHomework
             foreach (var company in resultOddId)
             {
                 Console.WriteLine(company.Name);
-            }
-            Console.WriteLine("----------------Employee list order by Company ID----------------");
-            var resultCompanyId = _dataSlot.Employees.OrderByDescending(e => e.Company.Id);
-
-            foreach (Employee employee in resultCompanyId)
-            {
-                Console.WriteLine("{0}, {1}", employee.Name,employee.Company.Id);
             }
             Console.WriteLine("----------------Employee list order by Salary----------------");
             var resultSalary = _dataSlot.Employees.OrderByDescending(e => e.Salary);
@@ -122,17 +115,19 @@ namespace CompanyHomework
         public DateTime BirthDate;
         public Company Company;
         public decimal Salary;
+        public int Age;
 
         public Employee()
         {
         }
 
-        public Employee(int id, string name, DateTime birthDate, decimal salary) 
+        public Employee(int id, string name, DateTime birthDate, decimal salary, int age) 
         {
             Id = id;
             Name = name;
             BirthDate = birthDate;
             Salary = salary;
+            Age = age;
         }
 
         private static Random rnd = new Random();
@@ -143,12 +138,23 @@ namespace CompanyHomework
             return startDate.AddDays(randomDays);
         }
 
+        private static int AgeCalculate(DateTime RandomDate)
+        {
+            int now = DateTime.Now.Year;
+            int dob = RandomDate.Year;
+            int age = now - dob;
+            return age;
+        }
+
         public static void CreateEmployee(DataSlot dataSlot, int total)
         {
             int companiesCount = dataSlot.Companies.Count;
+            var startDate = new DateTime(1950, 01, 01);
+            var endDate = new DateTime(2004, 01, 01);
             for (int i = 0; i < total; i++)
             {
-                var employee = new Employee(i + 1, "Emp-" + (i + 1).ToString(), RandomDate(new DateTime(1950,01,01), new DateTime(2004,01,01)), rnd.Next(1111, 9999));
+                var randomDate = RandomDate(startDate, endDate);
+                var employee = new Employee(i + 1, "Emp-" + (i + 1).ToString(), randomDate, rnd.Next(1111, 9999), AgeCalculate(randomDate));
                 employee.Company = dataSlot.Companies[rnd.Next(companiesCount)];
                 dataSlot.Employees.Add(employee);
             }
