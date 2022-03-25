@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,9 +49,19 @@ namespace CompanyHomework
 
             foreach (var employee in _dataSlot.Employees)
             {
-                Console.WriteLine("employee : Id: {0} Name: {1} BirthDate: {2} company name :{3} company id: {4} salary: {5} TL age: {6}", 
+                Console.WriteLine("Employee : Id:{0} Name:{1} BirthDate:{2} Company Name:{3} Company Id:{4} Salary:{5} TL Age:{6}", 
                     employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company.Name,employee.Company.Id,employee.Salary,employee.Age);
             }
+
+            string filePath = @"D:/projects/demos/test.txt";
+            List<string> test = new List<string>();
+            test = File.ReadAllLines(filePath).ToList();
+            foreach (string item in test)
+            {
+                Console.WriteLine(item);
+            }
+            test.Add("Employee : Id:115 Name:Osman BirthDate:12.11.1981 Company Name:Amazon Company Id:91 Salary:8500 TL Age:41");
+            File.WriteAllLines(filePath, test);
 
             Console.WriteLine("----------------Company list with Odd ID----------------");
             var resultOddId = _dataSlot.Companies.Where(c => c.Id % 2 == 1);
@@ -63,7 +74,7 @@ namespace CompanyHomework
 
             foreach (Employee employee in resultSalary)
             {
-                Console.WriteLine("{0}, {1} TL", employee.Name, employee.Salary);
+                Console.WriteLine("{0}: {1} TL", employee.Name, employee.Salary);
             }
 
             Console.ReadLine();
