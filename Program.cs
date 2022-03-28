@@ -12,10 +12,7 @@ namespace CompanyHomework
         static DataSlot _dataSlot = new DataSlot();
         static void Main(string[] args)
         {
-            Console.WriteLine("init");
-
-            Console.WriteLine("Create Company");
-            
+            _dataSlot.LoadFromCsv();
             int companyCount = 0;
             Console.Write("Şirket sayısı giriniz: ");
             while (!int.TryParse(Console.ReadLine(), out companyCount))
@@ -44,24 +41,16 @@ namespace CompanyHomework
                 Console.Write("Çalışan sayısı giriniz: ");
             }
             Employee.CreateEmployee(_dataSlot, employeeCount);
+            _dataSlot.SaveToCsv();
+
 
             Console.WriteLine("----------------Get Employee List----------------");
 
             foreach (var employee in _dataSlot.Employees)
             {
                 Console.WriteLine("Employee : Id:{0} Name:{1} BirthDate:{2} Company Name:{3} Company Id:{4} Salary:{5} TL Age:{6}", 
-                    employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company.Name,employee.Company.Id,employee.Salary,employee.Age);
+                    employee.Id,employee.Name,employee.BirthDate.ToString("dd.MM.yyyy"),employee.Company?.Name,employee.Company?.Id,employee.Salary,employee.Age);
             }
-
-            string filePath = @"D:/projects/demos/test.txt";
-            List<string> test = new List<string>();
-            test = File.ReadAllLines(filePath).ToList();
-            foreach (string item in test)
-            {
-                Console.WriteLine(item);
-            }
-            test.Add("Employee : Id:115 Name:Osman BirthDate:12.11.1981 Company Name:Amazon Company Id:91 Salary:8500 TL Age:41");
-            File.WriteAllLines(filePath, test);
 
             Console.WriteLine("----------------Company list with Odd ID----------------");
             var resultOddId = _dataSlot.Companies.Where(c => c.Id % 2 == 1);
@@ -88,6 +77,50 @@ namespace CompanyHomework
         {
             Companies = new List<Company>();
             Employees = new List<Employee>();
+        }
+        private void LoadCompaniesFromCsv() 
+        {
+        }
+        private void LoadEmployeesFromCsv()
+        {
+            var empStrList = CsvHandler.ReadAsync(@"D:/projects/demos/employees.csv");
+            foreach (var item in empStrList)
+            {
+                var fields = item.Split(';');
+                Employees.Add(new Employee()
+                {
+                    Id = int.Parse(fields[0]),
+                    Name = fields[1],
+                    BirthDate = DateTime.ParseExact(fields[2], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture),
+                    Salary = decimal.Parse(fields[4]),
+                    Age = int.Parse(fields[5])
+                });
+            }
+        }
+        public void LoadFromCsv()
+        {
+            LoadCompaniesFromCsv();
+            LoadEmployeesFromCsv();
+        }
+        private void SaveEmployeesToCsv()
+        {
+            var lines = new List<string>();
+            lines.Add("Id;Name;BirthDate;CompanyId;Salary;Age");
+            foreach (var item in Employees)
+            {
+                lines.Add(item.Id + ";" + item.Name + ";" + item.BirthDate.ToString("dd.MM.yyyy") + ";" + item.Company?.Id + ";" + item.Salary + ";" + item.Age);
+            }
+            CsvHandler.WriteAsync(@"D:/projects/demos/employees.csv", lines);
+        }
+        private void SaveCompaniesToCsv()
+        {
+
+        }
+
+        public void SaveToCsv()
+        {
+            SaveEmployeesToCsv();
+            SaveCompaniesToCsv();
         }
     }
 
@@ -171,12 +204,46 @@ namespace CompanyHomework
             var endDate = new DateTime(2004, 01, 01);
             for (int i = 0; i < total; i++)
             {
+                var randomId = rnd.Next(1, 999999999);
+                while (dataSlot.Employees.Where(e=>e.Id == randomId).FirstOrDefault()!= null)
+                {
+                    randomId = rnd.Next(1, 999999999);
+                }
                 var randomDate = RandomDate(startDate, endDate);
-                var employee = new Employee(i + 1, "Emp-" + (i + 1).ToString(), randomDate, rnd.Next(1111, 9999), AgeCalculate(randomDate));
+                var employee = new Employee(randomId, "Emp-" + (i + 1).ToString(), randomDate, rnd.Next(1111, 9999), AgeCalculate(randomDate));
                 employee.Company = dataSlot.Companies[rnd.Next(companiesCount)];
                 dataSlot.Employees.Add(employee);
             }
         }
+    }
+    public class CsvHandler
+    {
+        public static List<string> ReadAsync(string filePath, bool hasHeader = true)
+        {
+            List<string> lines = new List<string>();
+            if (!File.Exists(filePath))
+            {
+                return lines;
+            }
+            lines = File.ReadAllLines(filePath).ToList();
+            if (hasHeader)
+            {
+                lines.RemoveAt(0);
+            }
+            return lines.Where(e=>!String.IsNullOrEmpty(e)).ToList();
+        }
+
+        public static void WriteAsync(string filePath, List<string>lines)
+        {
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                foreach (var item in lines)
+                {
+                    sw.WriteLine(item);
+                }
+            }
+        }
+
     }
     
 
