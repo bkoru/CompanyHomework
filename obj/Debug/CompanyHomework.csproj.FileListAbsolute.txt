@@ -1,7 +1,0 @@
-D:\projects\CompanyHomework\bin\Debug\CompanyHomework.exe.config
-D:\projects\CompanyHomework\bin\Debug\CompanyHomework.exe
-D:\projects\CompanyHomework\bin\Debug\CompanyHomework.pdb
-D:\projects\CompanyHomework\obj\Debug\CompanyHomework.csproj.AssemblyReference.cache
-D:\projects\CompanyHomework\obj\Debug\CompanyHomework.csproj.CoreCompileInputs.cache
-D:\projects\CompanyHomework\obj\Debug\CompanyHomework.exe
-D:\projects\CompanyHomework\obj\Debug\CompanyHomework.pdb
