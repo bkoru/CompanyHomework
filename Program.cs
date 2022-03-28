@@ -92,9 +92,9 @@ namespace CompanyHomework
                     Id = int.Parse(fields[0]),
                     Name = fields[1],
                     BirthDate = DateTime.ParseExact(fields[2], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture),
+                    Company = Companies.Where(e => e.Id == int.Parse(fields[3])).FirstOrDefault(),
                     Salary = decimal.Parse(fields[4]),
-                    Age = int.Parse(fields[5]),
-                    Company = int.Parse(fields[3])
+                    Age = int.Parse(fields[5])
                 });
             }
         }
