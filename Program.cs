@@ -93,7 +93,8 @@ namespace CompanyHomework
                     Name = fields[1],
                     BirthDate = DateTime.ParseExact(fields[2], "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture),
                     Salary = decimal.Parse(fields[4]),
-                    Age = int.Parse(fields[5])
+                    Age = int.Parse(fields[5]),
+                    Company = int.Parse(fields[3])
                 });
             }
         }
